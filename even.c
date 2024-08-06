@@ -6,10 +6,10 @@
   void handle_sigint(int signal){
         if(signal == SIGHUP){
             printf("Ouch!\n");
-            return 1;
+       
         }else if(signal == SIGINT){
             printf("Yeah!\n");
-            return 1;
+      
         }
     }
 int main(){
@@ -21,10 +21,13 @@ int main(){
     return 1;
    }
 
-    signal(SIGINT, handle_sigint);
-    signal(SIGHUP, handle_sigint);
-
+ struct sigaction sa;
+    sa.sa_handler = handle_sigint;
+    sa.sa_flags = 0; 
+    sigemptyset(&sa.sa_mask);
     
+    sigaction(SIGINT, &sa, NULL);
+    sigaction(SIGHUP, &sa, NULL);
 
 
    for ( int i =0; i < nn;i++){
