@@ -18,9 +18,21 @@ int main(){
     fprintf(stderr, "Enter a positive integer\n");
     return 1;
    }
-    
-    signal(SIGHUP,signals);
-    signal(SIGINT,signals);
+     struct sigaction act;
+     act.sa_handler= signals;
+     act.sa_flags = 0; // or SA_RESTART
+
+    sigemptyset(&act.sa_mask);
+    if (sigaction(SIGHUP, &act, NULL) == -1) {
+        perror("Error handling SIGHUP");
+        return 1;
+    }
+
+    if (sigaction(SIGINT, &act, NULL) == -1) {
+        perror("Error handling SIGINT");
+        return 1;
+    }
+
 
    for ( int i =0; i < nn;i++){
     printf("%d\n",i*2);
