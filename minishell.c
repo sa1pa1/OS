@@ -25,7 +25,7 @@ char line[NL];	/* command input buffer */
 	shell prompt
  */
 
-prompt(void)
+void prompt(void)
 {
   fprintf(stdout, "\n msh> ");
   fflush(stdout);
@@ -33,7 +33,7 @@ prompt(void)
 }
 
 
-main(int argk, char *argv[], char *envp[])
+int main(int argk, char *argv[], char *envp[])
 /* argk - number of arguments */
 /* argv - argument vector from command line */
 /* envp - environment pointer */
@@ -44,7 +44,6 @@ main(int argk, char *argv[], char *envp[])
   char           *v[NV];	/* array of pointers to command line tokens */
   char           *sep = " \t\n";/* command line token separators    */
   int             i;		/* parse index */
-  int             cwd[1024];
   int num; //no of tokens in command line
 
   /* prompt for and process one command line at a time  */
