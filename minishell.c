@@ -68,7 +68,6 @@ int main(int argk, char *argv[], char *envp[])
     /* assert i is number of tokens + 1 */
 
     /* fork a child process to exec the command in v[0] */
-    wpid = 0;
     switch (frkRtnVal = fork()) {
     case -1:			/* fork returns error to parent process */
         {
