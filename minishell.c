@@ -38,7 +38,7 @@ int main(int argk, char *argv[], char *envp[])
 
 {
   int             frkRtnVal;	/* value returned by fork sys call */
-  int             wpid = NULL;		/* value returned by wait */
+  int             wpid;		/* value returned by wait */
   char           *v[NV];	/* array of pointers to command line tokens */
   char           *sep = " \t\n";/* command line token separators    */
   int             i;		/* parse index */
@@ -68,7 +68,7 @@ int main(int argk, char *argv[], char *envp[])
     /* assert i is number of tokens + 1 */
 
     /* fork a child process to exec the command in v[0] */
-
+    wpid = 0;
     switch (frkRtnVal = fork()) {
     case -1:			/* fork returns error to parent process */
         {
