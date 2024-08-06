@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <signal.h>
 
-  void signals(int signal){
+  void handle_sigint(int signal){
         if(signal == SIGHUP){
             printf("Ouch!\n");
         }else if(signal == SIGINT){
@@ -18,20 +18,10 @@ int main(){
     fprintf(stderr, "Enter a positive integer\n");
     return 1;
    }
-     struct sigaction act;
-     act.sa_handler= signals;
-     act.sa_flags = 0; // or SA_RESTART
+    signal(SIGINT, handle_sigint);
+    signal(SIGHUP, handle_sigint);
 
-    sigemptyset(&act.sa_mask);
-    if (sigaction(SIGHUP, &act, NULL) == -1) {
-        perror("Error handling SIGHUP");
-        return 1;
-    }
-
-    if (sigaction(SIGINT, &act, NULL) == -1) {
-        perror("Error handling SIGINT");
-        return 1;
-    }
+    
 
 
    for ( int i =0; i < nn;i++){
