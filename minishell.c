@@ -44,6 +44,7 @@ int main(int argk, char *argv[], char *envp[])
   char           *v[NV];	/* array of pointers to command line tokens */
   char           *sep = " \t\n";/* command line token separators    */
   int             i;		/* parse index */
+
   int num; //no of tokens in command line
 
   /* prompt for and process one command line at a time  */
@@ -54,7 +55,6 @@ int main(int argk, char *argv[], char *envp[])
     fflush(stdin);
 
     if (feof(stdin)) {		/* non-zero on EOF  */
-
       fprintf(stderr, "EOF pid %d feof %d ferror %d\n", getpid(),
 	      feof(stdin), ferror(stdin));
       exit(0);
@@ -63,25 +63,12 @@ int main(int argk, char *argv[], char *envp[])
       continue;			/* to prompt */
 
     v[0] = strtok(line, sep);
-    num = 1;
-    while (num < NV && v[num-1] != NULL){
-        v[num] = strtok(NULL,sep);
-        num++;
+    
+    for (i = 1; i < NV; i++) {
+      v[i] = strtok(NULL, sep);
+      if (v[i] == NULL)
+	break;
     }
- if (strcmp(v[0], "cd") == 0) {
-            /* change the current working directory */
-            if (num > 1) {
-                if (chdir(v[1]) != 0) {
-                    perror("chdir");
-                }
-            } else {
-                /* go to the home directory */
-                if (chdir(getenv("HOME")) != 0) {
-                    perror("chdir");
-                }
-            }
-            continue;
-        }
     /* assert i is number of tokens + 1 */
 
     /* fork a child process to exec the command in v[0] */
