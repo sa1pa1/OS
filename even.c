@@ -6,8 +6,10 @@
   void handle_sigint(int signal){
         if(signal == SIGHUP){
             printf("Ouch!\n");
+            return 1;
         }else if(signal == SIGINT){
             printf("Yeah!\n");
+            return 1;
         }
     }
 int main(){
@@ -18,6 +20,7 @@ int main(){
     fprintf(stderr, "Enter a positive integer\n");
     return 1;
    }
+
     signal(SIGINT, handle_sigint);
     signal(SIGHUP, handle_sigint);
 
