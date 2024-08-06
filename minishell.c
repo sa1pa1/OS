@@ -27,9 +27,7 @@ char line[NL];	/* command input buffer */
 
 void prompt(void)
 {
-  fprintf(stdout, "\n msh> ");
   fflush(stdout);
-
 }
 
 
@@ -55,8 +53,6 @@ int main(int argk, char *argv[], char *envp[])
     fflush(stdin);
 
     if (feof(stdin)) {		/* non-zero on EOF  */
-      fprintf(stderr, "EOF pid %d feof %d ferror %d\n", getpid(),
-	      feof(stdin), ferror(stdin));
       exit(0);
     }
     if (line[0] == '#' || line[0] == '\n' || line[0] == '\000')
@@ -95,7 +91,6 @@ int main(int argk, char *argv[], char *envp[])
         {
         if (strcmp(v[num-2],"&")!=0){
             wpid = wait(NULL);
-            printf("%s done \n", v[0]);
         }else {
             printf("[%d] %s\n",frkRtnVal, v[0]);
         }
