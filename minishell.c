@@ -40,7 +40,7 @@ int main(int argk, char *argv[], char *envp[])
 
 {
   int             frkRtnVal;	/* value returned by fork sys call */
-  int             wpid;		/* value returned by wait */
+  int             wpid = NULL;		/* value returned by wait */
   char           *v[NV];	/* array of pointers to command line tokens */
   char           *sep = " \t\n";/* command line token separators    */
   int             i;		/* parse index */
@@ -63,7 +63,7 @@ int main(int argk, char *argv[], char *envp[])
       continue;			/* to prompt */
 
     v[0] = strtok(line, sep);
-    
+    num =1;
     for (i = 1; i < NV; i++) {
       v[i] = strtok(NULL, sep);
       if (v[i] == NULL)
@@ -93,7 +93,7 @@ int main(int argk, char *argv[], char *envp[])
         }
     default:			/* code executed only by parent process */
         {
-        if (strcmp(v[num-2],"&")!=NULL){
+        if (strcmp(v[num-2],"&")!=0){
             wpid = wait(NULL);
             printf("%s done \n", v[0]);
         }else {
