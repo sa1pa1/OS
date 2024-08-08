@@ -79,21 +79,32 @@ int main(int argk, char *argv[], char *envp[])
         }
     /* assert i is number of tokens + 1 */
     /* fork a child process to exec the command in v[0] */
-    switch (frkRtnVal = fork())
-    {
-    case -1: /* fork returns error to parent process */
-    {
-      break;
-    }
-    case 0: /* code executed only by child process */
-    {
-      execvp(v[0], v);
-    }
-    default: /* code executed only by parent process */
-    {
-      waitpid = wait(0);
-      break;
-    }
-    } /* switch */
+     /* fork a child process to exec the command in v[0] */
+        switch (frkRtnVal = fork())
+        {
+        case -1: /* fork returns error to parent process */
+        {
+            perror("msh: fork");
+            break;
+        }
+        case 0: /* code executed only by child process */
+        {
+            if (execvp(v[0], v) == -1)
+            {
+                perror("msh: execvp");
+            }
+            exit(EXIT_FAILURE); /* exit if execvp fails */
+        }
+        default: /* code executed only by parent process */
+        {
+    
+            if ((waitpid = wait(0)) == -1)
+            {
+                perror("msh: wait");
+            }
+            printf("%s done \n", v[0]);
+            break;
+        }
+        } /* switch */
   } /* while */
 } /* main */
