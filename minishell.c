@@ -36,6 +36,8 @@ int main(int argk, char *argv[], char *envp[])
   char *v[NV];         /* array of pointers to command line tokens */
   char *sep = " \t\n"; /* command line token separators */
   int i;               /* parse index */
+
+
   int bg = 0;          /*flag bavkground process*/
   int bg_pids[NV];     /* array to store background PIDs */
   char *bg_cmds[NV];   /* array to store background commands */
@@ -135,8 +137,6 @@ int main(int argk, char *argv[], char *envp[])
             }
             break;
 
-             
-        
         }
         } /* switch */
         // Check for completed background processes and print done messages
@@ -145,9 +145,9 @@ int main(int argk, char *argv[], char *envp[])
         while ((finished_pid = waitpid(-1, &status, WNOHANG)) > 0) {
             for (i = 1; i < bg_counter; i++) {
                 if (bg_pids[i] == finished_pid) {
-                   printf("[%d]+ Done %s %s\n", i, bg_cmds[i], v[1]);
+                   printf("[%d]+ Done %s\n", i, bg_cmds[i]);
                     free(bg_cmds[i]); // Free allocated memory
-                    // bg_pids[i] = 0;
+                    bg_pids[i] = 0;
                     // bg_cmds[i] = NULL;
                     break;
                 }
