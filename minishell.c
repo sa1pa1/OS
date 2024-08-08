@@ -26,11 +26,6 @@ void prompt(void)
   fflush(stdout);
 }
 
-void print_bg_done(int bg_num, const char *cmd) {
-    printf("[%d]+ Done %s\n", bg_num, cmd);
-    fflush(stdout);
-}
-
 int main(int argk, char *argv[], char *envp[])
 /* argk - number of arguments */
 /* argv - argument vector from command line */
@@ -43,8 +38,8 @@ int main(int argk, char *argv[], char *envp[])
   int i;               /* parse index */
   int bg = 0;          /*flag bavkground process*/
   int bg_pids[NV];     /* array to store background PIDs */
-    char *bg_cmds[NV];   /* array to store background commands */
-    int bg_indices[NV];  /* array to store background indices */
+  char *bg_cmds[NV];   /* array to store background commands */
+  int bg_indices[NV];  /* array to store background indices */
   /* prompt for and process one command line at a time */
 
  /* Initialize background process arrays */
@@ -150,7 +145,7 @@ int main(int argk, char *argv[], char *envp[])
         while ((finished_pid = waitpid(-1, &status, WNOHANG)) > 0) {
             for (i = 1; i < bg_counter; i++) {
                 if (bg_pids[i] == finished_pid) {
-                   printf("[%d]+ Done %s\n", i, bg_cmds[i]);
+                   printf("[%d]+ Done %s %s\n", i, bg_cmds[i], v[1]);
                     free(bg_cmds[i]); // Free allocated memory
                     bg_pids[i] = 0;
                     bg_cmds[i] = NULL;
