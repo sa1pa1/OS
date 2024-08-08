@@ -61,7 +61,7 @@ int main(int argk, char *argv[], char *envp[])
             {
                 if (homeDir == NULL)
                 {
-                    fprintf(stderr, "msh: HOME environment variable not set\n");
+                    fprintf(stderr, "msh: HOME not set\n");
                 }
                 else if (chdir(homeDir) != 0)
                 {
@@ -102,7 +102,6 @@ int main(int argk, char *argv[], char *envp[])
             {
                 perror("msh: wait");
             }
-            printf("%s done \n", v[0]);
             break;
         }
         } /* switch */
