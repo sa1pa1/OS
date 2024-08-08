@@ -19,8 +19,6 @@
 #define NV 20			/* max number of command tokens */
 #define NL 100			/* input buffer size */
 char            line[NL];	/* command input buffer */
-
-
 /*
 	shell prompt
  */
@@ -52,7 +50,7 @@ int main(int argk, char *argv[], char *envp[])
   char           *v[NV];	/* array of pointers to command line tokens */
   char           *sep = " \t\n";/* command line token separators    */
   int             i;		/* parse index */
-  int             bp;       /*background process*/
+  int             bp = 0;       /*background process*/
 
   signal(SIGCHLD, background_handler);
 
@@ -79,27 +77,37 @@ int main(int argk, char *argv[], char *envp[])
       if (v[i] == NULL)
 	break;
     }
+
+    /* flag background procedss 
+    checking for character ending with & 
+    cmd: sleep 5 &
+    [1] PID 
+    [1] + Done sleep --- 
+    */
     /* assert i is number of tokens + 1 */
 
+    // Handling cd
     if (strcmp(v[0], "cd") == 0) {
-            if (v[1] == NULL || chdir(v[1]) != 0) {
-                perror("cd");
+        if (v[1] == NULL) {
+            v[1] = getenv("HOME");
+            if (v[1] == NULL) {
+                fprintf(stderr, "cd: HOME environment variable is not set.\n");
+                continue;
             }
-            continue;
         }
-
-        bp = (i > 1 && strcmp(v[i-1], "&") == 0);
-        if (bp) {
-            v[i-1] = NULL;
+        if (chdir(v[1]) != 0) {
+            perror("cd");
         }
-
+        continue;
+    }
     /* fork a child process to exec the command in v[0] */
+    /**/
 
     switch (frkRtnVal = fork()) {
     case -1:			/* fork returns error to parent process */
       {
     perror("fork");
-	break;
+    continue;
       }
     case 0:			/* code executed only by child process */
       {
