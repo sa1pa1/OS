@@ -30,7 +30,7 @@ int main(int argk, char *argv[], char *envp[])
 /* envp - environment pointer */
 {
   int frkRtnVal;       /* value returned by fork sys call */
-  // int wpid;            /* value returned by wait */
+  int waitpid;            /* value returned by wait */
   char *v[NV];         /* array of pointers to command line tokens */
   char *sep = " \t\n"; /* command line token separators */
   int i;               /* parse index */
@@ -91,7 +91,7 @@ int main(int argk, char *argv[], char *envp[])
     }
     default: /* code executed only by parent process */
     {
-      wpid = wait(0);
+      waitpid = wait(0);
       break;
     }
     } /* switch */
