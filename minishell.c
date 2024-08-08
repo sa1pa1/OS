@@ -135,11 +135,11 @@ int main(int argk, char *argv[], char *envp[])
             }
             break;
 
-             // Check for completed background processes
-        
+             
         
         }
         } /* switch */
+        // Check for completed background processes and print done messages
         int status;
         pid_t finished_pid;
         while ((finished_pid = waitpid(-1, &status, WNOHANG)) > 0) {
@@ -147,8 +147,8 @@ int main(int argk, char *argv[], char *envp[])
                 if (bg_pids[i] == finished_pid) {
                    printf("[%d]+ Done %s %s\n", i, bg_cmds[i], v[1]);
                     free(bg_cmds[i]); // Free allocated memory
-                    bg_pids[i] = 0;
-                    bg_cmds[i] = NULL;
+                    // bg_pids[i] = 0;
+                    // bg_cmds[i] = NULL;
                     break;
                 }
             }
