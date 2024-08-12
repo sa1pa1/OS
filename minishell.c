@@ -136,19 +136,26 @@ int main(int argk, char *argv[], char *envp[])
         }}
 
         } /* switch */
-        int status;
+         int status;
         pid_t finished_pid;
+        //flag finished process for printing 
         while ((finished_pid = waitpid(-1, &status, WNOHANG)) > 0) {
             for (i = 1; i < bg_counter; i++) {
                 if (bg_PID[i] == finished_pid) {
-                   printf("[%d]+ Done %s %s\n", i, bg_cmds[i], bg_cmds_value[i]);
-                    free(bg_cmds[i]); // Free allocated memory
-                    bg_PID[i] = 0;
-                    // bg_cmds[i] = NULL;
+                    bg_ID[i] = 1;
                     break;
                 }
             }
-        
-    }
+        }
+
+     
+        for (i = 1; i < bg_counter; i++) {
+            if (bg_ID[i] == 1) { 
+                printf("[%d]+ Done %s %s\n", i, bg_cmds[i], bg_cmds_value[i]);
+                free(bg_cmds[i]);
+                bg_PID[i] = 0;
+                bg_ID[i] = 0; 
+            }
+        }
   } /* while */
 } /* main */
