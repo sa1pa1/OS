@@ -142,7 +142,11 @@ int main(int argk, char *argv[], char *envp[])
       if (bg) {
                     bg_PID[bg_counter] = frkRtnVal;
                     bg_cmds[bg_counter] = strdup(v[0]);
-                    bg_cmds_value[bg_counter] = v[1] ? strdup(v[1]) : NULL;
+                    if (v[1]!=NULL){
+                        bg_cmds_value[bg_counter] = strdup(v[1]);
+                    }else {
+                        bg_cmds_value[bg_counter] = NULL;
+                    }
                     printf("[%d] %d\n", bg_counter, frkRtnVal);
                     fflush(stdout);
                     bg_counter++;
@@ -150,11 +154,11 @@ int main(int argk, char *argv[], char *envp[])
                     if (waitpid(frkRtnVal, NULL, 0) == -1) {
                         perror("msh: wait");
                     }
-                }
+                
                 break;
-        
-        
+        }
 
         } /* switch */
+      
   } /* while */
 } /* main */
