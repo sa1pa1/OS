@@ -31,7 +31,7 @@ int main(int argk, char *argv[], char *envp[])
 /* envp - environment pointer */
 {
   int frkRtnVal;       /* value returned by fork sys call */
-  int wpid;            /* value returned by wait */
+  // int wpid;            /* value returned by wait */
   char *v[NV];         /* array of pointers to command line tokens */
   char *sep = " \t\n"; /* command line token separators */
   int i;               /* parse index */
@@ -40,26 +40,47 @@ int main(int argk, char *argv[], char *envp[])
   int bg_PID[NV];
   char *bg_cmds[NV];
   char *bg_cmds_value[NV]; 
-  int bg_ID[NV];
 
-  memset(bg_PID, 0, NV-1);
-  memset(bg_cmds, 0, NV-1);
-  memset(bg_ID, 0, NV-1);
-  memset(bg_cmds_value,0,NV-1);
+
+  memset(bg_PID, 0, sizeof(bg_PID));
+  memset(bg_cmds, 0, sizeof(bg_cmds));
+  memset(bg_cmds_value,0,sizeof(bg_cmds_value));
 
 
   /* prompt for and process one command line at a time */
   while (1)
   { /* do Forever */
+    int status;
+    pid_t finished_pid;
+        while ((finished_pid = waitpid(-1, &status, WNOHANG)) > 0) {
+            for (int i = 1; i < bg_counter;i++) {
+                if (bg_PID[i] == finished_pid) {
+                   printf("[%d]+ Done %s %s\n", i, bg_cmds[i], bg_cmds_value[i]);
+                   fflush(stdout);
+
+                   
+                    free(bg_cmds[i]); // Free allocated memory
+                    bg_PID[i] = 0;
+                    bg_cmds_value[i] = NULL;
+                    bg_cmds[i] = NULL;
+                    break;
+                }
+            }
+        
+    }
+
+
     prompt();
     fgets(line, NL, stdin);
     fflush(stdin);
-    if (feof(stdin))
-    { /* non-zero on EOF */
+
+    if (feof(stdin)){ /* non-zero on EOF */
       exit(0);
     }
+
     if (line[0] == '#' || line[0] == '\n' || line[0] == '\000')
       continue; /* to prompt */
+
     v[0] = strtok(line, sep);
     for (i = 1; i < NV; i++)
     {
@@ -116,46 +137,24 @@ int main(int argk, char *argv[], char *envp[])
             exit(EXIT_FAILURE); /* exit if execvp fails */
         }
         default: /* code executed only by parent process */
-        {
+        
   
-        if (bg){
-                bg_PID[bg_counter] = frkRtnVal;
-                bg_cmds[bg_counter] = strdup(v[0]);
-                bg_cmds_value[bg_counter] = strdup(v[1]);
-                bg_ID[bg_counter] = bg_counter;
-                printf("[%d] %d\n", bg_counter, frkRtnVal);
-                fflush(stdout);
-                bg_counter++;
-        } else {
-          if ((wpid = wait(0)) == -1)
-            {
-                perror("msh: wait");
-            }
-            break;
-    
-        }}
+      if (bg) {
+                    bg_PID[bg_counter] = frkRtnVal;
+                    bg_cmds[bg_counter] = strdup(v[0]);
+                    bg_cmds_value[bg_counter] = v[1] ? strdup(v[1]) : NULL;
+                    printf("[%d] %d\n", bg_counter, frkRtnVal);
+                    fflush(stdout);
+                    bg_counter++;
+                } else {
+                    if (waitpid(frkRtnVal, NULL, 0) == -1) {
+                        perror("msh: wait");
+                    }
+                }
+                break;
+        
+        
 
         } /* switch */
-         int status;
-        pid_t finished_pid;
-        //flag finished process for printing 
-        while ((finished_pid = waitpid(-1, &status, WNOHANG)) > 0) {
-            for (i = 1; i < bg_counter; i++) {
-                if (bg_PID[i] == finished_pid) {
-                    bg_ID[i] = 1;
-                    break;
-                }
-            }
-        }
-
-     
-        for (i = 1; i < bg_counter; i++) {
-            if (bg_ID[i] == 1) { 
-                printf("[%d]+ Done %s %s\n", i, bg_cmds[i], bg_cmds_value[i]);
-                free(bg_cmds[i]);
-                bg_PID[i] = 0;
-                bg_ID[i] = 0; 
-            }
-        }
   } /* while */
 } /* main */
